@@ -416,6 +416,7 @@
     let viewWidth = 320;
     let viewHeight = 240;
     let mobileControlsHeight = 0;
+    let mobilePlayfieldPadding = 0;
 
     const input = {
       left: false,
@@ -495,8 +496,10 @@
       const viewport = getViewportSize();
       const isMobile = isMobileLayout();
       mobileControlsHeight = isMobile ? clamp(Math.round(viewport.height * 0.24), 78, 118) : 0;
+      mobilePlayfieldPadding = isMobile ? clamp(Math.round(viewport.height * 0.12), 34, 62) : 0;
       viewWidth = Math.max(320, viewport.width);
       viewHeight = Math.max(220, viewport.height - mobileControlsHeight);
+      const safePlayfieldHeight = Math.max(180, viewHeight - mobilePlayfieldPadding);
 
       document.documentElement.style.setProperty("--app-height", viewport.height + "px");
       document.documentElement.style.setProperty("--mobile-control-height", mobileControlsHeight + "px");
@@ -506,8 +509,9 @@
       canvas.style.width = viewWidth + "px";
       canvas.style.height = viewHeight + "px";
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      scale = clamp(Math.min(viewWidth / 520, viewHeight / CONFIG.baseHeight), 0.68, 1.15);
-      worldTopOffset = Math.max(0, viewHeight / scale - CONFIG.worldHeight);
+      const minimumScale = isMobile ? 0.42 : 0.68;
+      scale = clamp(Math.min(viewWidth / 520, safePlayfieldHeight / CONFIG.baseHeight), minimumScale, 1.15);
+      worldTopOffset = Math.max(0, safePlayfieldHeight / scale - CONFIG.worldHeight);
       updateCamera();
     }
 
@@ -1081,6 +1085,7 @@
           viewWidth,
           viewHeight,
           mobileControlsHeight,
+          mobilePlayfieldPadding,
           isMobileLayout: isMobileLayout(),
           fullscreenSupported: !fullscreenButton.hidden
         };
