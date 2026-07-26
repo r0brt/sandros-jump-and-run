@@ -10,6 +10,8 @@
       --button-bg: rgba(255, 255, 255, 0.5);
       --button-border: rgba(20, 45, 70, 0.22);
       --button-text: #17324a;
+      --app-height: 100dvh;
+      --mobile-control-height: 0px;
     }
 
     * {
@@ -17,6 +19,7 @@
       -webkit-tap-highlight-color: transparent;
       touch-action: none;
       user-select: none;
+      -webkit-user-select: none;
     }
 
     html,
@@ -33,6 +36,7 @@
     body {
       position: fixed;
       inset: 0;
+      height: var(--app-height);
     }
 
     #gameCanvas {
@@ -152,29 +156,54 @@
       position: fixed;
       left: 0;
       right: 0;
-      bottom: max(12px, env(safe-area-inset-bottom));
+      bottom: 0;
       display: none;
-      justify-content: space-between;
-      align-items: end;
-      padding: 0 max(14px, env(safe-area-inset-right)) 0 max(14px, env(safe-area-inset-left));
-      pointer-events: none;
+      height: var(--mobile-control-height);
+      grid-template-columns: minmax(150px, 1fr) minmax(58px, 0.34fr) minmax(150px, 1fr);
+      gap: 10px;
+      align-items: stretch;
+      padding:
+        10px max(12px, env(safe-area-inset-right))
+        max(10px, env(safe-area-inset-bottom))
+        max(12px, env(safe-area-inset-left));
+      border-top: 1px solid rgba(255, 255, 255, 0.36);
+      background: rgba(22, 56, 75, 0.78);
+      box-shadow: 0 -10px 26px rgba(10, 45, 66, 0.2);
+      backdrop-filter: blur(10px);
+      pointer-events: auto;
     }
 
     .move-buttons,
     .action-buttons {
-      display: flex;
-      gap: 12px;
-      pointer-events: auto;
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .move-buttons {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .action-buttons {
+      grid-template-columns: 1fr;
+    }
+
+    .utility-buttons {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      min-width: 0;
     }
 
     .touch-button {
-      width: clamp(74px, 18vw, 112px);
-      height: clamp(62px, 15vw, 92px);
+      width: 100%;
+      height: 100%;
+      min-height: 56px;
       border: 2px solid var(--button-border);
       border-radius: 8px;
       background: var(--button-bg);
       color: var(--button-text);
-      font-size: clamp(2rem, 7vw, 3.2rem);
+      font-size: clamp(1.6rem, 6vw, 2.6rem);
       font-weight: 900;
       line-height: 1;
       box-shadow: 0 12px 24px rgba(11, 55, 80, 0.16);
@@ -183,12 +212,18 @@
     }
 
     .touch-button.small {
-      position: fixed;
-      top: max(12px, env(safe-area-inset-top));
-      right: max(12px, env(safe-area-inset-right));
-      width: 48px;
-      height: 44px;
-      font-size: 1rem;
+      min-height: 0;
+      font-size: 0.95rem;
+      letter-spacing: 0;
+    }
+
+    .touch-button[hidden] {
+      display: none;
+    }
+
+    .touch-button.jump-button {
+      font-size: clamp(1.1rem, 4.2vw, 1.7rem);
+      letter-spacing: 0;
     }
 
     .touch-button.active,
@@ -197,9 +232,13 @@
       transform: translateY(2px);
     }
 
-    @media (hover: none), (pointer: coarse), (max-width: 720px) {
+    @media (hover: none), (pointer: coarse) {
+      #gameCanvas {
+        height: calc(var(--app-height) - var(--mobile-control-height));
+      }
+
       .touch-controls {
-        display: flex;
+        display: grid;
       }
 
       .hud {
@@ -208,6 +247,40 @@
 
       .hud-pill {
         padding: 7px 10px;
+      }
+    }
+
+    .orientation-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 20;
+      display: none;
+      place-items: center;
+      padding: 24px;
+      background:
+        linear-gradient(rgba(98, 190, 228, 0.94), rgba(102, 202, 140, 0.94)),
+        #88dcff;
+      color: #17324a;
+      text-align: center;
+    }
+
+    .orientation-screen strong {
+      display: block;
+      font-size: clamp(2rem, 10vw, 3.4rem);
+      line-height: 1.05;
+    }
+
+    .orientation-screen span {
+      display: block;
+      margin-top: 12px;
+      font-size: clamp(1rem, 4.5vw, 1.25rem);
+      font-weight: 700;
+    }
+
+    @media (hover: none) and (orientation: portrait),
+      (pointer: coarse) and (orientation: portrait) {
+      .orientation-screen {
+        display: grid;
       }
     }
   </style>
@@ -222,14 +295,24 @@
 
   <div class="touch-controls" aria-label="Touch-Steuerung">
     <div class="move-buttons">
-      <button class="touch-button" data-control="left" aria-label="Nach links laufen">‹</button>
-      <button class="touch-button" data-control="right" aria-label="Nach rechts laufen">›</button>
+      <button class="touch-button" data-control="left" aria-label="Nach links laufen">◀</button>
+      <button class="touch-button" data-control="right" aria-label="Nach rechts laufen">▶</button>
+    </div>
+    <div class="utility-buttons">
+      <button class="touch-button small" id="touchRestart" aria-label="Level neu starten">R</button>
+      <button class="touch-button small" id="fullscreenButton" aria-label="Vollbild ein- oder ausschalten">⛶</button>
     </div>
     <div class="action-buttons">
-      <button class="touch-button" data-control="jump" aria-label="Springen">↑</button>
+      <button class="touch-button jump-button" data-control="jump" aria-label="Springen">SPRUNG</button>
     </div>
-    <button class="touch-button small" id="touchRestart" aria-label="Level neu starten">R</button>
   </div>
+
+  <section class="orientation-screen" id="orientationScreen" aria-live="polite">
+    <div>
+      <strong>Bitte Handy drehen</strong>
+      <span>Im Querformat ist Sandros Jump'n'Run am besten spielbar.</span>
+    </div>
+  </section>
 
   <section class="screen" id="startScreen">
     <div class="panel">
@@ -275,6 +358,7 @@
     const playButton = document.getElementById("playButton");
     const playAgainButton = document.getElementById("playAgainButton");
     const touchRestart = document.getElementById("touchRestart");
+    const fullscreenButton = document.getElementById("fullscreenButton");
 
     let level = createLevel();
     let player = createPlayer();
@@ -284,6 +368,9 @@
     let messageTimer = 0;
     let scale = 1;
     let worldTopOffset = 0;
+    let viewWidth = 320;
+    let viewHeight = 240;
+    let mobileControlsHeight = 0;
 
     const input = {
       left: false,
@@ -360,16 +447,35 @@
 
     function resizeCanvas() {
       const dpr = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
-      const width = Math.max(320, window.innerWidth);
-      const height = Math.max(240, window.innerHeight);
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      canvas.style.width = width + "px";
-      canvas.style.height = height + "px";
+      const viewport = getViewportSize();
+      const isMobile = isMobileLayout();
+      mobileControlsHeight = isMobile ? clamp(Math.round(viewport.height * 0.24), 78, 118) : 0;
+      viewWidth = Math.max(320, viewport.width);
+      viewHeight = Math.max(220, viewport.height - mobileControlsHeight);
+
+      document.documentElement.style.setProperty("--app-height", viewport.height + "px");
+      document.documentElement.style.setProperty("--mobile-control-height", mobileControlsHeight + "px");
+
+      canvas.width = Math.floor(viewWidth * dpr);
+      canvas.height = Math.floor(viewHeight * dpr);
+      canvas.style.width = viewWidth + "px";
+      canvas.style.height = viewHeight + "px";
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      scale = clamp(Math.min(width / 520, height / CONFIG.baseHeight), 0.68, 1.15);
-      worldTopOffset = Math.max(0, height / scale - CONFIG.worldHeight);
+      scale = clamp(Math.min(viewWidth / 520, viewHeight / CONFIG.baseHeight), 0.68, 1.15);
+      worldTopOffset = Math.max(0, viewHeight / scale - CONFIG.worldHeight);
       updateCamera();
+    }
+
+    function getViewportSize() {
+      const viewport = window.visualViewport;
+      return {
+        width: Math.round(viewport ? viewport.width : window.innerWidth),
+        height: Math.round(viewport ? viewport.height : window.innerHeight)
+      };
+    }
+
+    function isMobileLayout() {
+      return window.matchMedia("(hover: none), (pointer: coarse)").matches;
     }
 
     function updatePlayer() {
@@ -494,20 +600,18 @@
     }
 
     function updateCamera() {
-      const viewWidth = window.innerWidth / scale;
-      const desiredX = player.x + player.w / 2 - viewWidth * 0.42;
-      camera.x = clamp(desiredX, 0, Math.max(0, CONFIG.worldWidth - viewWidth));
+      const visibleWorldWidth = viewWidth / scale;
+      const desiredX = player.x + player.w / 2 - visibleWorldWidth * 0.42;
+      camera.x = clamp(desiredX, 0, Math.max(0, CONFIG.worldWidth - visibleWorldWidth));
     }
 
     function drawBackground(time) {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      const gradient = ctx.createLinearGradient(0, 0, 0, height);
+      const gradient = ctx.createLinearGradient(0, 0, 0, viewHeight);
       gradient.addColorStop(0, CONFIG.levelBackground);
       gradient.addColorStop(0.58, "#bdf1ff");
       gradient.addColorStop(1, "#a5e988");
       ctx.fillStyle = gradient;
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillRect(0, 0, viewWidth, viewHeight);
 
       const clouds = [
         { x: 110, y: 85, s: 1.1 },
@@ -620,7 +724,7 @@
         updateCamera();
       }
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, viewWidth, viewHeight);
       drawBackground(time);
       drawLevel(time);
       drawPlayer(time);
@@ -748,6 +852,8 @@
     }
 
     function setupControls() {
+      fullscreenButton.hidden = !document.documentElement.requestFullscreen;
+
       window.addEventListener("keydown", (event) => {
         const key = event.key.toLowerCase();
         if (["arrowleft", "arrowright", "arrowup", " ", "a", "d", "w", "r"].includes(key)) {
@@ -811,12 +917,39 @@
         resetGame("Neu gestartet");
       });
 
+      fullscreenButton.addEventListener("pointerdown", async (event) => {
+        event.preventDefault();
+        await toggleFullscreen();
+      });
+
       playButton.addEventListener("click", () => resetGame());
       playAgainButton.addEventListener("click", () => resetGame());
       window.addEventListener("resize", resizeCanvas);
+      window.addEventListener("orientationchange", resizeCanvas);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener("resize", resizeCanvas);
+      }
       document.addEventListener("gesturestart", preventGesture, { passive: false });
       document.addEventListener("touchmove", preventGesture, { passive: false });
       document.addEventListener("contextmenu", preventGesture);
+    }
+
+    async function toggleFullscreen() {
+      if (!document.documentElement.requestFullscreen) {
+        return;
+      }
+
+      try {
+        if (document.fullscreenElement && document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else {
+          await document.documentElement.requestFullscreen();
+        }
+      } catch (error) {
+        showStatus("Vollbild klappt hier nicht");
+      } finally {
+        resizeCanvas();
+      }
     }
 
     function releasePointer(pointerId, button) {
@@ -899,7 +1032,12 @@
           enemies: level.enemies.map((enemy) => ({ ...enemy })),
           goal: { ...level.goal },
           enemyCount: level.enemies.length,
-          platformCount: level.platforms.length
+          platformCount: level.platforms.length,
+          viewWidth,
+          viewHeight,
+          mobileControlsHeight,
+          isMobileLayout: isMobileLayout(),
+          fullscreenSupported: !fullscreenButton.hidden
         };
       },
       setPlayerPosition(x, y) {
