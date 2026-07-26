@@ -237,6 +237,51 @@
         height: calc(var(--app-height) - var(--mobile-control-height));
       }
 
+      .screen {
+        inset: 0 0 var(--mobile-control-height) 0;
+        bottom: var(--mobile-control-height);
+        padding:
+          max(8px, env(safe-area-inset-top))
+          max(10px, env(safe-area-inset-right))
+          8px
+          max(10px, env(safe-area-inset-left));
+        overflow: hidden;
+      }
+
+      .screen .panel {
+        display: flex;
+        width: min(520px, 92vw);
+        max-height: calc(var(--app-height) - var(--mobile-control-height) - 16px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: clamp(10px, 3vh, 18px);
+      }
+
+      .screen h1 {
+        font-size: clamp(1.55rem, 10vh, 3rem);
+        line-height: 1;
+      }
+
+      .screen h2 {
+        font-size: clamp(1.45rem, 9vh, 2.5rem);
+        line-height: 1;
+      }
+
+      .screen p {
+        margin-top: clamp(6px, 2vh, 12px);
+        font-size: clamp(0.88rem, 3.2vh, 1.05rem);
+        line-height: 1.25;
+      }
+
+      .screen .primary-button {
+        min-width: 150px;
+        flex: 0 0 auto;
+        margin-top: clamp(8px, 2.5vh, 16px);
+        padding: clamp(9px, 2.4vh, 12px) 18px;
+        font-size: clamp(1rem, 3.5vh, 1.15rem);
+      }
+
       .touch-controls {
         display: grid;
       }
