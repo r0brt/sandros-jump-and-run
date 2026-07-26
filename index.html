@@ -382,6 +382,7 @@
     const CONFIG = {
       playerColor: "#f8fbff",
       moveSpeed: 4.4,
+      desktopMoveSpeedMultiplier: 0.8,
       jumpStrength: 13.4,
       gravity: 0.62,
       coinValue: 1,
@@ -391,8 +392,11 @@
       worldHeight: 540,
       coyoteFrames: 8,
       jumpBufferFrames: 9,
-      enemySpeed: 1.15
+      enemySpeed: 1.15,
+      gameOverPauseMs: 1300
     };
+
+    const DRAWN_ENEMY_IMAGE_SRC = "data:image/webp;base64,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";
 
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
@@ -404,6 +408,8 @@
     const playAgainButton = document.getElementById("playAgainButton");
     const touchRestart = document.getElementById("touchRestart");
     const fullscreenButton = document.getElementById("fullscreenButton");
+    const drawnEnemyImage = new Image();
+    drawnEnemyImage.src = DRAWN_ENEMY_IMAGE_SRC;
 
     let level = createLevel();
     let player = createPlayer();
@@ -417,6 +423,8 @@
     let viewHeight = 240;
     let mobileControlsHeight = 0;
     let mobilePlayfieldPadding = 0;
+    let gameOverTimer = 0;
+    let gameOverMessage = "";
 
     const input = {
       left: false,
@@ -454,7 +462,8 @@
       const enemies = [
         { x: 690, y: 417, w: 34, h: 34, minX: 655, maxX: 860, speed: 1.1, direction: 1, color: "#ff6f59" },
         { x: 1460, y: 344, w: 34, h: 38, minX: 1420, maxX: 1600, speed: 0.95, direction: -1, color: "#7f77ff" },
-        { x: 2190, y: 354, w: 34, h: 38, minX: 2160, maxX: 2360, speed: 1.25, direction: 1, color: "#ff8b3d" }
+        { x: 2190, y: 354, w: 34, h: 38, minX: 2160, maxX: 2360, speed: 1.25, direction: 1, color: "#ff8b3d" },
+        { x: 1900, y: 356, w: 96, h: 64, minX: 1840, maxX: 2020, speed: 0.72, direction: -1, kind: "drawn", color: "#444040" }
       ];
 
       return {
@@ -485,6 +494,8 @@
       player = createPlayer();
       camera.x = 0;
       gameState = "playing";
+      gameOverTimer = 0;
+      gameOverMessage = "";
       winScreen.hidden = true;
       startScreen.hidden = true;
       updateCoinCounter();
@@ -532,12 +543,13 @@
       const previousY = player.y;
       const wantsLeft = input.left && !input.right;
       const wantsRight = input.right && !input.left;
+      const moveSpeed = CONFIG.moveSpeed * (isMobileLayout() ? 1 : CONFIG.desktopMoveSpeedMultiplier);
 
       if (wantsLeft) {
-        player.vx = -CONFIG.moveSpeed;
+        player.vx = -moveSpeed;
         player.facing = -1;
       } else if (wantsRight) {
-        player.vx = CONFIG.moveSpeed;
+        player.vx = moveSpeed;
         player.facing = 1;
       } else {
         player.vx = 0;
@@ -570,7 +582,7 @@
       checkVerticalPlatformCollisions(previousY);
 
       if (player.y > CONFIG.worldHeight + 145) {
-        resetGame("Noch einmal!");
+        finishGame("Der Yeti ist runtergefallen.");
       }
     }
 
@@ -605,7 +617,7 @@
           h: enemy.h - 6
         };
         if (rectsOverlap(player, softEnemyBox)) {
-          resetGame("Autsch! Neustart");
+          finishGame("Der Yeti hat einen Gegner berührt.");
           return;
         }
       }
@@ -771,12 +783,18 @@
         updateEnemies();
         checkCollisions();
         updateCamera();
+      } else if (gameState === "gameover") {
+        gameOverTimer = Math.max(0, gameOverTimer - elapsed);
+        if (gameOverTimer === 0) {
+          resetGame("Noch einmal!");
+        }
       }
 
       ctx.clearRect(0, 0, viewWidth, viewHeight);
       drawBackground(time);
       drawLevel(time);
       drawPlayer(time);
+      drawGameOverMessage();
       requestAnimationFrame(gameLoop);
     }
 
@@ -817,6 +835,11 @@
     }
 
     function drawEnemy(enemy, time) {
+      if (enemy.kind === "drawn") {
+        drawDrawnEnemy(enemy, time);
+        return;
+      }
+
       const wobble = Math.sin(time * 0.012 + enemy.x) * 3;
       ctx.save();
       ctx.translate(enemy.x + enemy.w / 2, enemy.y + enemy.h / 2 + wobble);
@@ -836,6 +859,62 @@
       ctx.moveTo(12, 12);
       ctx.lineTo(17, 18);
       ctx.stroke();
+      ctx.restore();
+    }
+
+    function drawDrawnEnemy(enemy, time) {
+      const wobble = Math.sin(time * 0.01 + enemy.x) * 2.5;
+      ctx.save();
+      ctx.translate(enemy.x + enemy.w / 2, enemy.y + enemy.h / 2 + wobble);
+      if (enemy.direction > 0) {
+        ctx.scale(-1, 1);
+      }
+
+      if (drawnEnemyImage.complete) {
+        ctx.drawImage(drawnEnemyImage, -enemy.w / 2, -enemy.h / 2, enemy.w, enemy.h);
+      } else {
+        ctx.fillStyle = enemy.color;
+        ellipse(0, 0, enemy.w / 2, enemy.h / 2);
+      }
+      ctx.restore();
+    }
+
+    function finishGame(message) {
+      if (gameState !== "playing") {
+        return;
+      }
+
+      gameState = "gameover";
+      gameOverTimer = CONFIG.gameOverPauseMs;
+      gameOverMessage = message;
+      input.left = false;
+      input.right = false;
+      input.jump = false;
+      showStatus("Spiel fertig!");
+    }
+
+    function drawGameOverMessage() {
+      if (gameState !== "gameover") {
+        return;
+      }
+
+      ctx.save();
+      ctx.fillStyle = "rgba(21, 49, 74, 0.34)";
+      ctx.fillRect(0, 0, viewWidth, viewHeight);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.88)";
+      const boxWidth = Math.min(430, viewWidth - 32);
+      const boxHeight = 118;
+      const x = (viewWidth - boxWidth) / 2;
+      const y = Math.max(22, (viewHeight - boxHeight) / 2);
+      roundRect(x, y, boxWidth, boxHeight, 8);
+      ctx.fillStyle = "#17324a";
+      ctx.font = "900 30px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText("Spiel fertig!", viewWidth / 2, y + 45);
+      ctx.font = "700 17px system-ui, sans-serif";
+      ctx.fillText(gameOverMessage, viewWidth / 2, y + 76);
+      ctx.font = "700 14px system-ui, sans-serif";
+      ctx.fillText("Gleich startet es neu.", viewWidth / 2, y + 100);
       ctx.restore();
     }
 
@@ -1086,6 +1165,8 @@
           viewHeight,
           mobileControlsHeight,
           mobilePlayfieldPadding,
+          gameOverTimer,
+          gameOverMessage,
           isMobileLayout: isMobileLayout(),
           fullscreenSupported: !fullscreenButton.hidden
         };
