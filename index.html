@@ -462,8 +462,8 @@
       const enemies = [
         { x: 690, y: 417, w: 34, h: 34, minX: 655, maxX: 860, speed: 1.1, direction: 1, color: "#ff6f59" },
         { x: 1460, y: 344, w: 34, h: 38, minX: 1420, maxX: 1600, speed: 0.95, direction: -1, color: "#7f77ff" },
-        { x: 2190, y: 328, w: 96, h: 64, minX: 2160, maxX: 2360, speed: 0.82, direction: 1, kind: "drawn", color: "#444040" },
-        { x: 1900, y: 356, w: 96, h: 64, minX: 1840, maxX: 2020, speed: 0.72, direction: -1, kind: "drawn", color: "#444040" }
+        { x: 2190, y: 328, w: 96, h: 64, minX: 2160, maxX: 2360, speed: 0.82, direction: 1, kind: "drawn", color: "#444040", hitbox: { insetX: 24, insetTop: 22, insetBottom: 12 } },
+        { x: 1900, y: 356, w: 96, h: 64, minX: 1840, maxX: 2020, speed: 0.72, direction: -1, kind: "drawn", color: "#444040", hitbox: { insetX: 24, insetTop: 22, insetBottom: 12 } }
       ];
 
       return {
@@ -610,13 +610,7 @@
       }
 
       for (const enemy of level.enemies) {
-        const softEnemyBox = {
-          x: enemy.x + 4,
-          y: enemy.y + 4,
-          w: enemy.w - 8,
-          h: enemy.h - 6
-        };
-        if (rectsOverlap(player, softEnemyBox)) {
+        if (rectsOverlap(player, getEnemyHitbox(enemy))) {
           finishGame("Der Yeti hat einen Gegner berührt.");
           return;
         }
@@ -642,6 +636,21 @@
           player.vx = 0;
         }
       }
+    }
+
+    function getEnemyHitbox(enemy) {
+      // Gezeichnete Gegner haben unsichtbaren Rand im Bild; die Trefferzone bleibt fair.
+      const hitbox = enemy.hitbox || {};
+      const insetX = hitbox.insetX ?? 4;
+      const insetTop = hitbox.insetTop ?? 4;
+      const insetBottom = hitbox.insetBottom ?? 2;
+
+      return {
+        x: enemy.x + insetX,
+        y: enemy.y + insetTop,
+        w: Math.max(4, enemy.w - insetX * 2),
+        h: Math.max(4, enemy.h - insetTop - insetBottom)
+      };
     }
 
     function checkVerticalPlatformCollisions(previousY) {
