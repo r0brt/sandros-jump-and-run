@@ -369,9 +369,9 @@
 
   <section class="screen" id="winScreen" hidden>
     <div class="panel">
-      <h2>Gewonnen!</h2>
-      <p>Der freundliche Yeti hat die Flagge erreicht und alle Ideen im Rucksack.</p>
-      <button class="primary-button" id="playAgainButton">Noch einmal</button>
+      <h2 id="winTitle">Gewonnen!</h2>
+      <p id="winMessage">Der freundliche Yeti hat die Flagge erreicht und alle Ideen im Rucksack.</p>
+      <button class="primary-button" id="playAgainButton">Von vorne spielen</button>
     </div>
   </section>
 
@@ -393,7 +393,8 @@
       coyoteFrames: 8,
       jumpBufferFrames: 9,
       enemySpeed: 1.15,
-      gameOverPauseMs: 1300
+      gameOverPauseMs: 1300,
+      levelCompletePauseMs: 1450
     };
 
     const DRAWN_ENEMY_IMAGE_SRC = "data:image/webp;base64,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";
@@ -404,6 +405,8 @@
     const statusText = document.getElementById("statusText");
     const startScreen = document.getElementById("startScreen");
     const winScreen = document.getElementById("winScreen");
+    const winTitle = document.getElementById("winTitle");
+    const winMessage = document.getElementById("winMessage");
     const playButton = document.getElementById("playButton");
     const playAgainButton = document.getElementById("playAgainButton");
     const touchRestart = document.getElementById("touchRestart");
@@ -411,8 +414,9 @@
     const drawnEnemyImage = new Image();
     drawnEnemyImage.src = DRAWN_ENEMY_IMAGE_SRC;
 
-    let level = createLevel();
-    let player = createPlayer();
+    let currentLevel = 1;
+    let level;
+    let player;
     let camera = { x: 0 };
     let gameState = "start";
     let lastTime = 0;
@@ -425,6 +429,8 @@
     let mobilePlayfieldPadding = 0;
     let gameOverTimer = 0;
     let gameOverMessage = "";
+    let levelCompleteTimer = 0;
+    let levelCompleteMessage = "";
 
     const input = {
       left: false,
@@ -434,50 +440,114 @@
 
     const activePointers = new Map();
 
-    function createLevel() {
-      // Level-Bausteine: Neue Plattformen oder Münzen einfach hier ergänzen.
-      const platforms = [
-        { x: 0, y: 455, w: 530, h: 85, color: "#7dbe4c" },
-        { x: 620, y: 455, w: 300, h: 85, color: "#69b95a" },
-        { x: 770, y: 330, w: 170, h: 24, color: "#7fc65d" },
-        { x: 1010, y: 420, w: 270, h: 120, color: "#76c05d" },
-        { x: 1210, y: 286, w: 170, h: 24, color: "#82c85d" },
-        { x: 1395, y: 382, w: 260, h: 158, color: "#70bb67" },
-        { x: 1710, y: 430, w: 330, h: 110, color: "#77c14f" },
-        { x: 1845, y: 306, w: 175, h: 24, color: "#86c760" },
-        { x: 2130, y: 392, w: 280, h: 148, color: "#65b96d" },
-        { x: 2490, y: 455, w: 370, h: 85, color: "#7bc750" }
-      ];
+    const LEVELS = {
+      1: {
+        name: "Level 1",
+        worldWidth: 2860,
+        background: "#88dcff",
+        playerStart: { x: 78, y: 390 },
+        platforms: [
+          { x: 0, y: 455, w: 530, h: 85, color: "#7dbe4c" },
+          { x: 620, y: 455, w: 300, h: 85, color: "#69b95a" },
+          { x: 770, y: 330, w: 170, h: 24, color: "#7fc65d" },
+          { x: 1010, y: 420, w: 270, h: 120, color: "#76c05d" },
+          { x: 1210, y: 286, w: 170, h: 24, color: "#82c85d" },
+          { x: 1395, y: 382, w: 260, h: 158, color: "#70bb67" },
+          { x: 1710, y: 430, w: 330, h: 110, color: "#77c14f" },
+          { x: 1845, y: 306, w: 175, h: 24, color: "#86c760" },
+          { x: 2130, y: 392, w: 280, h: 148, color: "#65b96d" },
+          { x: 2490, y: 455, w: 370, h: 85, color: "#7bc750" }
+        ],
+        movingPlatforms: [],
+        coins: [
+          { x: 285, y: 392 },
+          { x: 805, y: 276 },
+          { x: 1150, y: 362 },
+          { x: 1255, y: 232 },
+          { x: 1882, y: 252 },
+          { x: 2240, y: 332 },
+          { x: 2648, y: 392 }
+        ],
+        enemies: [
+          { x: 690, y: 417, w: 34, h: 34, minX: 655, maxX: 860, speed: 1.1, direction: 1, color: "#ff6f59" },
+          { x: 1460, y: 344, w: 34, h: 38, minX: 1420, maxX: 1600, speed: 0.95, direction: -1, color: "#7f77ff" },
+          { x: 2190, y: 328, w: 96, h: 64, minX: 2160, maxX: 2360, speed: 0.82, direction: 1, kind: "drawn", color: "#444040", hitbox: { insetX: 24, insetTop: 22, insetBottom: 12 } },
+          { x: 1900, y: 356, w: 96, h: 64, minX: 1840, maxX: 2020, speed: 0.72, direction: -1, kind: "drawn", color: "#444040", hitbox: { insetX: 24, insetTop: 22, insetBottom: 12 } }
+        ],
+        goal: { x: 2705, y: 323, w: 62, h: 132 }
+      },
+      2: {
+        name: "Level 2",
+        worldWidth: 3260,
+        background: "#7edcff",
+        playerStart: { x: 76, y: 390 },
+        platforms: [
+          { x: 0, y: 455, w: 450, h: 85, color: "#72bd55" },
+          { x: 560, y: 455, w: 230, h: 85, color: "#63b96b" },
+          { x: 860, y: 390, w: 220, h: 150, color: "#7ac75d" },
+          { x: 1145, y: 330, w: 160, h: 24, color: "#8ace68" },
+          { x: 1716, y: 430, w: 270, h: 110, color: "#69bd73" },
+          { x: 2050, y: 360, w: 180, h: 24, color: "#86ca63" },
+          { x: 2300, y: 455, w: 312, h: 85, color: "#74c45a" },
+          { x: 2640, y: 392, w: 252, h: 148, color: "#65bb7b" },
+          { x: 2920, y: 455, w: 320, h: 85, color: "#83c94f" }
+        ],
+        movingPlatforms: [
+          { x: 1360, y: 378, w: 180, h: 24, minX: 1320, maxX: 1620, speed: 0.95, direction: 1, color: "#ffd36a", moving: true }
+        ],
+        coins: [
+          { x: 245, y: 392 },
+          { x: 615, y: 392 },
+          { x: 938, y: 326 },
+          { x: 1192, y: 276 },
+          { x: 1450, y: 324 },
+          { x: 1910, y: 366 },
+          { x: 2115, y: 306 },
+          { x: 2738, y: 338 },
+          { x: 3090, y: 392 }
+        ],
+        enemies: [
+          { x: 645, y: 417, w: 34, h: 34, minX: 600, maxX: 750, speed: 0.95, direction: 1, color: "#ff8f4c" },
+          { x: 1840, y: 392, w: 34, h: 38, minX: 1780, maxX: 1970, speed: 0.9, direction: -1, color: "#6f89ff" },
+          { x: 2390, y: 391, w: 96, h: 64, minX: 2340, maxX: 2525, speed: 0.72, direction: 1, kind: "drawn", color: "#444040", hitbox: { insetX: 24, insetTop: 22, insetBottom: 12 } },
+          { x: 2705, y: 328, w: 34, h: 38, minX: 2665, maxX: 2815, speed: 0.84, direction: -1, color: "#cf73ff" }
+        ],
+        goal: { x: 3138, y: 323, w: 62, h: 132 }
+      }
+    };
 
-      const coins = [
-        { x: 285, y: 392, collected: false },
-        { x: 805, y: 276, collected: false },
-        { x: 1150, y: 362, collected: false },
-        { x: 1255, y: 232, collected: false },
-        { x: 1882, y: 252, collected: false },
-        { x: 2240, y: 332, collected: false },
-        { x: 2648, y: 392, collected: false }
-      ];
-
-      const enemies = [
-        { x: 690, y: 417, w: 34, h: 34, minX: 655, maxX: 860, speed: 1.1, direction: 1, color: "#ff6f59" },
-        { x: 1460, y: 344, w: 34, h: 38, minX: 1420, maxX: 1600, speed: 0.95, direction: -1, color: "#7f77ff" },
-        { x: 2190, y: 328, w: 96, h: 64, minX: 2160, maxX: 2360, speed: 0.82, direction: 1, kind: "drawn", color: "#444040", hitbox: { insetX: 24, insetTop: 22, insetBottom: 12 } },
-        { x: 1900, y: 356, w: 96, h: 64, minX: 1840, maxX: 2020, speed: 0.72, direction: -1, kind: "drawn", color: "#444040", hitbox: { insetX: 24, insetTop: 22, insetBottom: 12 } }
-      ];
+    function createLevel(levelNumber = currentLevel) {
+      // Level-Bausteine: Neue Plattformen oder Münzen einfach in LEVELS ergänzen.
+      const safeLevelNumber = LEVELS[levelNumber] ? levelNumber : 1;
+      const levelData = LEVELS[safeLevelNumber];
+      const platforms = levelData.platforms.map(cloneLevelObject);
+      const movingPlatforms = levelData.movingPlatforms.map((platform) => ({
+        ...cloneLevelObject(platform),
+        dx: 0
+      }));
 
       return {
-        platforms,
-        coins,
-        enemies,
-        goal: { x: 2705, y: 323, w: 62, h: 132 }
+        number: safeLevelNumber,
+        name: levelData.name,
+        worldWidth: levelData.worldWidth,
+        background: levelData.background,
+        playerStart: { ...levelData.playerStart },
+        platforms: [...platforms, ...movingPlatforms],
+        movingPlatforms,
+        coins: levelData.coins.map((coin) => ({ ...coin, collected: false })),
+        enemies: levelData.enemies.map(cloneLevelObject),
+        goal: cloneLevelObject(levelData.goal)
       };
     }
 
-    function createPlayer() {
+    function cloneLevelObject(item) {
+      return JSON.parse(JSON.stringify(item));
+    }
+
+    function createPlayer(start = { x: 78, y: 390 }) {
       return {
-        x: 78,
-        y: 390,
+        x: start.x,
+        y: start.y,
         w: 42,
         h: 56,
         vx: 0,
@@ -490,16 +560,33 @@
     }
 
     function resetGame(message) {
-      level = createLevel();
-      player = createPlayer();
+      loadLevel(currentLevel, message || "Los geht's!");
+    }
+
+    function startNewGame() {
+      loadLevel(1, "Los geht's!");
+    }
+
+    function loadLevel(levelNumber, message = "Los geht's!", options = {}) {
+      currentLevel = LEVELS[levelNumber] ? levelNumber : 1;
+      level = createLevel(currentLevel);
+      player = createPlayer(level.playerStart);
       camera.x = 0;
-      gameState = "playing";
       gameOverTimer = 0;
       gameOverMessage = "";
+      levelCompleteTimer = 0;
+      levelCompleteMessage = "";
+      input.left = false;
+      input.right = false;
+      input.jump = false;
       winScreen.hidden = true;
-      startScreen.hidden = true;
+      gameState = options.startScreen ? "start" : "playing";
+      startScreen.hidden = !options.startScreen;
       updateCoinCounter();
-      showStatus(message || "Los geht's!");
+      updateCamera();
+      if (!options.startScreen) {
+        showStatus(message);
+      }
     }
 
     function resizeCanvas() {
@@ -574,15 +661,32 @@
 
       player.x += player.vx;
       checkHorizontalPlatformCollisions(previousX);
-      player.x = clamp(player.x, 0, CONFIG.worldWidth - player.w);
+      player.x = clamp(player.x, 0, getWorldWidth() - player.w);
 
       player.vy = Math.min(player.vy + CONFIG.gravity, 16);
       player.y += player.vy;
       player.onGround = false;
       checkVerticalPlatformCollisions(previousY);
+      player.x = clamp(player.x, 0, getWorldWidth() - player.w);
 
       if (player.y > CONFIG.worldHeight + 145) {
         finishGame("Der Yeti ist runtergefallen.");
+      }
+    }
+
+    function updateMovingPlatforms() {
+      for (const platform of level.movingPlatforms) {
+        const previousX = platform.x;
+        platform.x += platform.speed * platform.direction;
+        if (platform.x <= platform.minX) {
+          platform.x = platform.minX;
+          platform.direction = 1;
+        }
+        if (platform.x + platform.w >= platform.maxX) {
+          platform.x = platform.maxX - platform.w;
+          platform.direction = -1;
+        }
+        platform.dx = platform.x - previousX;
       }
     }
 
@@ -617,10 +721,33 @@
       }
 
       if (rectsOverlap(player, level.goal)) {
-        gameState = "won";
-        winScreen.hidden = false;
-        showStatus("Ziel erreicht!");
+        completeLevel();
       }
+    }
+
+    function completeLevel() {
+      if (gameState !== "playing") {
+        return;
+      }
+
+      input.left = false;
+      input.right = false;
+      input.jump = false;
+
+      if (currentLevel < getLevelCount()) {
+        gameState = "levelcomplete";
+        levelCompleteTimer = CONFIG.levelCompletePauseMs;
+        levelCompleteMessage = getLevelCompleteMessage(currentLevel);
+        showStatus(levelCompleteMessage);
+        return;
+      }
+
+      gameState = "won";
+      winTitle.textContent = "Du hast das Spiel geschafft!";
+      winMessage.textContent = "Sandro und der Yeti haben beide Level gemeistert.";
+      playAgainButton.textContent = "Von vorne spielen";
+      winScreen.hidden = false;
+      showStatus("Spiel geschafft!");
     }
 
     function checkHorizontalPlatformCollisions(previousX) {
@@ -662,6 +789,9 @@
           player.y = platform.y - player.h;
           player.vy = 0;
           player.onGround = true;
+          if (platform.moving) {
+            player.x += platform.dx || 0;
+          }
         } else if (player.vy < 0 && previousY >= platform.y + platform.h) {
           player.y = platform.y + platform.h;
           player.vy = 0;
@@ -672,12 +802,24 @@
     function updateCamera() {
       const visibleWorldWidth = viewWidth / scale;
       const desiredX = player.x + player.w / 2 - visibleWorldWidth * 0.42;
-      camera.x = clamp(desiredX, 0, Math.max(0, CONFIG.worldWidth - visibleWorldWidth));
+      camera.x = clamp(desiredX, 0, Math.max(0, getWorldWidth() - visibleWorldWidth));
+    }
+
+    function getWorldWidth() {
+      return level?.worldWidth || CONFIG.worldWidth;
+    }
+
+    function getLevelCount() {
+      return Object.keys(LEVELS).length;
+    }
+
+    function getLevelCompleteMessage(levelNumber) {
+      return levelNumber === 1 ? "Level 1 geschafft!" : "Level " + levelNumber + " geschafft!";
     }
 
     function drawBackground(time) {
       const gradient = ctx.createLinearGradient(0, 0, 0, viewHeight);
-      gradient.addColorStop(0, CONFIG.levelBackground);
+      gradient.addColorStop(0, level?.background || CONFIG.levelBackground);
       gradient.addColorStop(0.58, "#bdf1ff");
       gradient.addColorStop(1, "#a5e988");
       ctx.fillStyle = gradient;
@@ -695,7 +837,7 @@
       ctx.scale(scale, scale);
       ctx.translate(-camera.x * 0.28, worldTopOffset);
       for (const cloud of clouds) {
-        const drift = ((time * 0.012 + cloud.x) % (CONFIG.worldWidth + 420)) - 210;
+        const drift = ((time * 0.012 + cloud.x) % (getWorldWidth() + 420)) - 210;
         drawCloud(drift, cloud.y, cloud.s);
       }
       ctx.restore();
@@ -788,6 +930,7 @@
       statusText.classList.toggle("visible", messageTimer > 0);
 
       if (gameState === "playing") {
+        updateMovingPlatforms();
         updatePlayer();
         updateEnemies();
         checkCollisions();
@@ -797,6 +940,11 @@
         if (gameOverTimer === 0) {
           resetGame("Noch einmal!");
         }
+      } else if (gameState === "levelcomplete") {
+        levelCompleteTimer = Math.max(0, levelCompleteTimer - elapsed);
+        if (levelCompleteTimer === 0) {
+          loadLevel(currentLevel + 1, "Level " + (currentLevel + 1) + " startet!");
+        }
       }
 
       ctx.clearRect(0, 0, viewWidth, viewHeight);
@@ -804,6 +952,7 @@
       drawLevel(time);
       drawPlayer(time);
       drawGameOverMessage();
+      drawLevelCompleteMessage();
       requestAnimationFrame(gameLoop);
     }
 
@@ -812,6 +961,10 @@
       roundRect(platform.x, platform.y + 12, platform.w, platform.h - 12, 8);
       ctx.fillStyle = platform.color;
       roundRect(platform.x, platform.y, platform.w, 24, 8);
+      if (platform.moving) {
+        ctx.fillStyle = "rgba(23, 50, 74, 0.28)";
+        ctx.fillRect(platform.x + 16, platform.y + 10, Math.max(0, platform.w - 32), 4);
+      }
       ctx.fillStyle = "rgba(255, 255, 255, 0.2)";
       ctx.fillRect(platform.x + 10, platform.y + 5, Math.max(0, platform.w - 20), 4);
       ctx.fillStyle = "#5b8e3e";
@@ -927,6 +1080,27 @@
       ctx.restore();
     }
 
+    function drawLevelCompleteMessage() {
+      if (gameState !== "levelcomplete") {
+        return;
+      }
+
+      ctx.save();
+      ctx.fillStyle = "rgba(21, 49, 74, 0.24)";
+      ctx.fillRect(0, 0, viewWidth, viewHeight);
+      ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+      const boxWidth = Math.min(430, viewWidth - 32);
+      const boxHeight = 92;
+      const x = (viewWidth - boxWidth) / 2;
+      const y = Math.max(22, (viewHeight - boxHeight) / 2);
+      roundRect(x, y, boxWidth, boxHeight, 8);
+      ctx.fillStyle = "#17324a";
+      ctx.font = "900 30px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.fillText(levelCompleteMessage, viewWidth / 2, y + 54);
+      ctx.restore();
+    }
+
     function drawGoal() {
       const goal = level.goal;
       ctx.fillStyle = "#5a4b3c";
@@ -968,7 +1142,7 @@
       ctx.fillStyle = "#88d46f";
       ctx.beginPath();
       ctx.moveTo(1450, CONFIG.worldHeight);
-      ctx.quadraticCurveTo(2070, 285, 2820, CONFIG.worldHeight);
+      ctx.quadraticCurveTo(2070, 285, getWorldWidth() - 40, CONFIG.worldHeight);
       ctx.lineTo(1450, CONFIG.worldHeight);
       ctx.fill();
     }
@@ -997,7 +1171,7 @@
           event.preventDefault();
         }
         if (gameState === "start" && (key === " " || key === "enter")) {
-          resetGame();
+          startNewGame();
         }
         if (key === "arrowleft" || key === "a") {
           setControl("left", true);
@@ -1059,8 +1233,8 @@
         await toggleFullscreen();
       });
 
-      playButton.addEventListener("click", () => resetGame());
-      playAgainButton.addEventListener("click", () => resetGame());
+      playButton.addEventListener("click", startNewGame);
+      playAgainButton.addEventListener("click", startNewGame);
       window.addEventListener("resize", resizeCanvas);
       window.addEventListener("orientationchange", resizeCanvas);
       if (window.visualViewport) {
@@ -1160,6 +1334,9 @@
       getDebugState() {
         return {
           gameState,
+          currentLevel,
+          levelCount: getLevelCount(),
+          levelName: level.name,
           player: { ...player },
           camera: { ...camera },
           input: { ...input },
@@ -1167,15 +1344,19 @@
           coinCount: level.coins.length,
           coins: level.coins.map((coin) => ({ ...coin })),
           enemies: level.enemies.map((enemy) => ({ ...enemy })),
+          movingPlatforms: level.movingPlatforms.map((platform) => ({ ...platform })),
           goal: { ...level.goal },
           enemyCount: level.enemies.length,
           platformCount: level.platforms.length,
+          movingPlatformCount: level.movingPlatforms.length,
           viewWidth,
           viewHeight,
           mobileControlsHeight,
           mobilePlayfieldPadding,
           gameOverTimer,
           gameOverMessage,
+          levelCompleteTimer,
+          levelCompleteMessage,
           isMobileLayout: isMobileLayout(),
           fullscreenSupported: !fullscreenButton.hidden
         };
@@ -1187,9 +1368,11 @@
         player.vx = 0;
         player.vy = 0;
       },
+      loadLevel,
       reset: resetGame
     };
 
+    loadLevel(1, "", { startScreen: true });
     setupControls();
     resizeCanvas();
     updateCoinCounter();
